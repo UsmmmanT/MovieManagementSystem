@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HUJ Movies</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% extends "base.html" %}
+    {% block title %}Home - Flick Match{% endblock %}
+    {% block content %}
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Track Movies You've Watched</h1>
+            <p>Discover, review, and share your favorite films.</p>
+            <a href="{{ url_for('signin') }}" class="btn">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Movie Grid Section -->
+    <section class="movie-grid">
+        <h2>Popular Movies</h2>
+        <div class="grid">
+            <!-- Loop through the first 10 movies and create a card for each -->
+            {% for movie in movies[:10] %}
+            <div class="movie-card">
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }} Poster">
+                <h3>{{ movie.title }}</h3>
+                <p>Release Date: {{ movie.release_date }}</p>
+            </div>
+            {% else %}
+            <p>No popular movies found.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }} - Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='movie_detail.css') }}">
+</head>
+<body>
+    <div class="search">
+    <a href="{{ url_for('movies') }}" class="back-button">Back to Search Results</a>
+    </div>
+    <div class="container">
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }} Poster" class="movie-image">
+
+        <div class="movie-info">
+            <h1>{{ movie.title }}</h1>
+         
+            <p><strong>Release Year:</strong> {{ movie.release_year }}</p>
+            <p><strong>Popularity:</strong> {{ movie.popularity }}</p>
+            <p><strong>Genres:</strong> {{ movie.genres | join(", ") }}</p>
+            <p><strong>Overview:</strong> {{ movie.overview }}</p>
+            
+            <!-- Add to Watchlist and Like buttons -->
+            <div class="action-buttons">
+                <button class="watchlist-button">Add to Watchlist</button>
+                <button class="like-button">❤️ Like</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Box for Reviews -->
+    <div class="comment-section">
+        <h2>Leave a Review</h2>
+        <form action="/add_review" method="post">
+            <textarea name="review" placeholder="Write your review here..." required></textarea>
+            <button type="submit" class="submit-button">Submit Review</button>
+        </form>
+    </div>
+</body>
+</html>

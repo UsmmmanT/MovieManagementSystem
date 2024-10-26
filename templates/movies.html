@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='movies.css') }}">
+</head>
+
+<body>
+    
+<a href="{{ url_for('index') }}">
+    <div class="container">
+        <a href="{{ url_for('search') }}" class="custom-button">Back to Search</a>  
+        <h1>Search Results</h1>
+        
+        {% if movies %}
+            <h2>Movies</h2>
+            <ul>
+                {% for item in movies %}
+                    {% if item.media_type == "Movie" and item.poster_url is not none and item.poster_url != '' %}
+                        <li>
+                            <a href="{{ url_for('movie_detail', movie_id=item.id) }}">
+                                <img src="{{ item.poster_url }}" alt="{{ item.title }} Poster">
+                                <div class="movie-info">
+                                    <h3>{{ item.title }}</h3> <!-- Movie Title -->
+                                    <p>Release Date: {{ item.release_date }}</p>
+                                </div>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            <h2>TV Shows</h2>
+            <ul>
+                {% for item in movies %}
+                    {% if item.media_type == "TV Show" %}
+                        <li>
+                            <a href="{{ url_for('movie_detail', movie_id=item.id) }}">
+                                <img src="{{ item.poster_url }}" alt="{{ item.title }} Poster">
+                                <div class="movie-info">
+                                    <h3>{{ item.title }}</h3> <!-- TV Show Title -->
+                                   
+                                    <p>Release Year: {{ item.release_year }}</p> <!-- TV Show Release Year -->
+                                </div>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            <h2>People</h2>
+            <ul>
+                {% for item in movies %}
+                    {% if item.media_type == "Person" %}
+                        <li>
+                            <img src="{{ item.profile_pic_url }}" alt="{{ item.name }} Profile Picture">
+                            <div class="movie-info">
+                                <h3>{{ item.name }}</h3> <!-- Person Name -->
+                                <p>Known For:</p>
+                                <ul>
+                                    {% for work in item.known_for %}
+                                        <li>{{ work }}</li> <!-- Known For Title -->
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No media found for "{{ request.args.get('movie') }}".</p>
+        {% endif %}
+    </div>
+</a>
+
+</body>
+</html>
