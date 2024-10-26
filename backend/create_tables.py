@@ -1,4 +1,4 @@
-import pg8000
+import pg8000 #changing from psycopg2git add
 from db_config import get_db_connection
 
 # Define table creation queries

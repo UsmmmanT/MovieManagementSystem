@@ -14,10 +14,27 @@ def fetch_movie_data(query, page=1):
         print(f"Error fetching movie data from TMDB: {e}")
         return []
 
+def fetch_company_data(movie_id):
+    """Fetch production companies for a specific movie."""
+    try:
+        movie = tmdb.Movies(movie_id)
+        response = movie.info()
+        return response.get('production_companies', [])
+    except Exception as e:
+        print(f"Error fetching company data from TMDB: {e}")
+        return []
+
 def is_movie_in_db(movie_id, cursor):
     """Check if the movie already exists in the database."""
     query = "SELECT COUNT(*) FROM Movies WHERE id = %s"
     cursor.execute(query, (movie_id,))
+    count = cursor.fetchone()[0]
+    return count > 0
+
+def is_company_in_db(company_id, cursor):
+    """Check if the company already exists in the database."""
+    query = "SELECT COUNT(*) FROM company WHERE id = %s"
+    cursor.execute(query, (company_id,))
     count = cursor.fetchone()[0]
     return count > 0
 
@@ -54,6 +71,28 @@ def insert_movie(movie, cursor, conn):
         print(f"Error inserting movie '{movie.get('title')}' into database: {e}")
         return False  # Indicate failure
 
+def insert_company(company, cursor, conn):
+    """Insert company data into the database using an existing cursor and connection."""
+    data = (
+        company.get('id'),
+        company.get('name'),
+        company.get('logo_path'),
+        company.get('origin_country')
+    )
+
+    try:
+        insert_query = """
+        INSERT INTO company (id, name, logo_path, origin_country)
+        VALUES (%s, %s, %s, %s)
+        ON CONFLICT (id) DO NOTHING;  -- Avoids duplicate entries
+        """
+        cursor.execute(insert_query, data)
+        conn.commit()
+        return True  # Indicate success
+    except Exception as e:
+        print(f"Error inserting company '{company.get('name')}' into database: {e}")
+        return False  # Indicate failure
+
 def process_movie(movie):
     """Process the movie by checking if it's in the database and inserting if not."""
     conn = get_db_connection()
@@ -61,7 +100,12 @@ def process_movie(movie):
     try:
         if not is_movie_in_db(movie.get('id'), cursor):
             if insert_movie(movie, cursor, conn):
-                return f"Success: Inserted movie '{movie['title']}'."
+                # Fetch and insert production companies
+                companies = fetch_company_data(movie.get('id'))
+                for company in companies:
+                    if not is_company_in_db(company.get('id'), cursor):
+                        insert_company(company, cursor, conn)
+                return f"Success: Inserted movie '{movie['title']}' and related companies."
             else:
                 return f"Failure: Could not insert movie '{movie['title']}'."
         else:
@@ -93,5 +137,5 @@ def retrieve_movies(query, num_pages=1):
 
 if __name__ == "__main__":
     query_string = "hero"  # Query string to search for movies
-    num_pages = 6            # Number of pages to fetch from the API
+    num_pages = 6           # Number of pages to fetch from the API
     retrieve_movies(query_string, num_pages)
