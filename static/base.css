@@ -2,9 +2,12 @@
 
 /* Navbar */
 header {
-    background-color: #2b2b2b;
-    padding: 10px 0;
-}
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 30px;
+    background-color: #333;
+  }
 
 nav {
     display: flex;
@@ -12,7 +15,8 @@ nav {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 10px;
+    margin-left: 50px;
 }
 
 nav .logo a {
@@ -20,12 +24,16 @@ nav .logo a {
     font-size: 24px;
     font-weight: bold;
     text-decoration: none;
+    text-align: left;
+    margin-right:450px;
+    margin-left: 0px;
 }
 
 nav .nav-links {
     list-style: none;
     display: flex;
     gap: 20px;
+    text-align: right;
 }
 
 nav .nav-links li a {
@@ -36,4 +44,19 @@ nav .nav-links li a {
 
 nav .nav-links li a:hover {
     color: #ff9900;
+}
+nav .logout-button {
+    background-color: gold; /* Blue background */
+    color: white; /* White text */
+    border: none; /* Remove default border */
+    padding: 5px 10px; /* Add padding for a better look */
+    font-size: 12px; /* Font size to match your navbar */
+    font-weight: bold; /* Optional: Make the text bold */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+nav .logout-button:hover {
+    background-color: gold; /* Darker blue on hover */
 }

@@ -13,15 +13,33 @@
     <header>
         <nav>
             <div class="logo">
-                <a href="/">HUJ Movies</a>
+                <a href="/">🎬HUJ Movies   </a>
             </div>
             <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="{{ url_for('movies') }}">Movies</a></li>
-                <li><a href="#">Watchlist</a></li>
-                <li><a href="#">Reviews</a></li>
-                <li><a href="{{ url_for('search') }}">Search</a></li>
-                <li><a href="{{ url_for('signin') }}">Sign In</a></li>
+                <li><a href="/">
+
+🏠Home</a></li>
+
+                <li><a href="{{ url_for('review1') }}">✍️Review</a></li>
+
+                <li><a href="{{ url_for('search') }}">🕵️‍♂️Search</a></li>
+                
+                {% if not session.get('logged_in') %}
+                <li><a href="{{ url_for('signin') }}">👤Sign In</a></li>
+                {% endif %}
+
+                {% if session['logged_in'] %}
+                <li><a href="{{ url_for('lists') }}">📋List</a></li>
+                {% endif %}
+                
+                {% if session['logged_in'] %}
+    <li><a href="{{ url_for('get_curr_user_detail') }}">👤Profile</a></li>
+{% endif %}
+
+                {% if session['logged_in'] %}
+                <button type="button" onclick="logout()" class="logout-button">Logout</button>
+                {% endif %}
+                
             </ul>
         </nav>
     </header>
@@ -30,7 +48,28 @@
     <main>
         {% block content %}{% endblock %}
     </main>
-
-  
+<script>
+    function logout() {
+        const form = document.getElementById('logoutForm');
+        
+        fetch('/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message); // Notify the user of successful logout
+                window.location.reload(); // Refresh the page or redirect as needed
+            }
+        })
+        .catch(error => {
+            console.error('Error logging out:', error);
+            alert('An error occurred while logging out.');
+        });
+    }
+</script>   
 </body>
 </html>

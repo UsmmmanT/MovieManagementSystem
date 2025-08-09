@@ -1,0 +1,145 @@
+/* General styling for containers */
+.container {
+    margin: 20px auto; /* Center the container horizontally */
+    padding: 20px;
+    border: 5px solid #252424;
+    border-radius: 10px;
+    background-color: #000000b5;
+    width: 80%; /* Reduce the container width */
+    max-width: 600px; /* Limit the maximum width */
+}
+
+/* Shared styling for user-container and user-list-section */
+.shared-container {
+    margin-bottom: 15px;
+    background-color: rgba(71, 70, 70, 0.9); /* Semi-transparent dark background */
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+}
+
+/* Styling for user detail section */
+.user-container {
+    margin-bottom: 20px; /* Ensure spacing between sections */
+}
+
+/* Styling for the list section */
+.user-list-section {
+    margin-top: 20px;
+    padding: 15px;
+    border-top: 1px solid #ddd; /* Visual separation */
+}
+
+/* Heading styling */
+h3 {
+    color: gold;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center; /* Center-align headings */
+}
+
+/* Styling the list */
+ul.user-list {
+    list-style-type: none; /* Remove bullet points */
+    padding-left: 0; /* Remove left padding */
+    margin: 0; /* Remove default margins */
+}
+
+ul.user-list li {
+    background-color: #2c2c2c; /* Light black shade */
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 10px;
+    position: relative; /* For positioning the type at the top right */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    
+}
+
+ul.user-list li:hover {
+    background-color: #3a3a3a; /* Slightly lighter shade on hover */
+}
+
+/* Styling for "Type" displayed at the top right corner */
+ul.user-list li span {
+    position: absolute; /* Positioning it inside the list item */
+    top: 8px;
+    right: 10px;
+    background-color: #1be72c; /* Dark background for better visibility */
+    color:black;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Styling for individual list details */
+ul.user-list li p {
+    margin: 5px 0;
+    color: white;
+    text-align: left;
+    
+}
+
+ul.user-list li p strong {
+    color: gold;
+}
+
+/* No lists found message */
+.user-list-section p {
+    color: #ddd;
+    text-align: center;
+}
+
+/* Buttons */
+.add-friend-button {
+    background-color: gold;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.add-friend-button:hover {
+    background-color: darkgoldenrod;
+}
+
+/* Body and background styling */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #101010a6;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+ul.user-list li {
+    text-decoration: none;
+}
+.delete-request-btn {
+    background-color: #f44336;  /* Red color for attention */
+    color: white;  /* Text color */
+    border: none;  /* Remove border */
+    padding: 10px 20px;  /* Padding for a better look */
+    font-size: 16px;  /* Font size */
+    cursor: pointer;  /* Show a pointer on hover */
+    border-radius: 5px;  /* Rounded corners */
+    transition: background-color 0.3s, transform 0.3s;  /* Smooth transitions */
+}
+
+.delete-request-btn:hover {
+    background-color: #d32f2f;  /* Darker red on hover */
+    transform: scale(1.05);  /* Slightly grow the button on hover */
+}
+
+.delete-request-btn:active {
+    background-color: #c62828;  /* Even darker red on active */
+}
+ul.user-list li a {
+    text-decoration: none;
+    color: inherit; /* Inherit the color of the parent element */
+}
+
+ul.user-list li a:hover {
+    text-decoration: none; /* Ensure no underline on hover as well */
+}

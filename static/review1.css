@@ -1,0 +1,149 @@
+
+/* General page styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #00000089; /* Dark background for the page */
+    margin: 0;
+    padding: 0;
+    color: #fff; /* White text for better visibility */
+}
+
+.container {
+    width: 40%; /* Make the container smaller for better readability */
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #2a3a3f; /* Darker background for the container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+    color: #fff; /* White text for the title */
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+/* Reviews list styling */
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Review card styling */
+.review-card {
+    display: flex-start;
+    align-items: center;
+    background-color: #4d4d4d; /* Grey background for the review cards */
+    padding: 20px; /* More padding for better spacing */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    height: 50%;
+   
+}
+
+.review-card:hover {
+    background-color: #616161; /* Lighter grey on hover */
+}
+
+
+
+h3 {
+    color: gold; /* Gold color for the movie title */
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1.1em;
+    margin: 5px 0;
+    color: white; /* Light text for the review details */
+}
+
+strong {
+    font-weight: bold;
+    color: #ffbb33; /* Yellowish color for labels */
+}
+
+small {
+    font-size: 0.9em;
+    color: #ccc; /* Lighter gray for created date */
+}
+
+/* If no reviews are found */
+p.no-reviews {
+    text-align: center;
+    font-size: 1.2em;
+    color: #888;
+}
+
+/* Link styling */
+a {
+    text-decoration: none; /* Remove underline from links */
+    color: inherit; /* Inherit color from parent element */
+}
+
+a:hover {
+    text-decoration: underline; /* Underline links on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 40%; /* Adjust container width for smaller screens */
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    .review-card {
+        padding: 15px;
+    }
+
+    h3 {
+        font-size: 1.5em;
+    }
+
+    p {
+        font-size: 1em;
+    }
+}
+img{
+    width:100%;
+    height: 100%;
+    margin-right: 20px;
+}
+.review-details {
+    flex: 1; /* Allow the details section to grow and fill available space */
+}
+.sign-in-button {
+    display: inline-block;
+    background-color: #ffd700; /* Gold color for the button */
+    color: black; /* Black text color */
+    border: none; /* Remove border */
+    padding: 12px 24px; /* Add padding for a comfortable size */
+    font-size: 16px; /* Set font size */
+    font-weight: bold; /* Make the text bold */
+    border-radius: 8px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    text-align: center; /* Center the text */
+    text-decoration: none; /* Remove underline for button text */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.sign-in-button:hover {
+    background-color: #daa520; /* Darker gold for hover effect */
+    color: white; /* White text color on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Enhance shadow on hover */
+    transform: translateY(-2px); /* Slightly raise button on hover */
+}
+
+.sign-in-button:active {
+    background-color: #b8860b; /* Even darker gold when clicked */
+    transform: translateY(0); /* Reset the raise effect */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow on click */
+}

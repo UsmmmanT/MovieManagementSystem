@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Watchlist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='watchlist.css') }}">
+</head>
+<body>
+    <h1>Your Watchlist</h1>
+    
+    <div class="movie-list">
+        {% for movie in movies %}
+            <div class="movie-item">
+                <img src="{{ movie.poster_path }}" alt="{{ movie.title }} Poster" class="movie-poster">
+                <h2>{{ movie.title }}</h2>
+                <p><strong>Release Year:</strong> {{ movie.release_year }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

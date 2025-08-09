@@ -1,41 +1,313 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ movie.title }} - Details</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='movie_detail.css') }}">
+    
 </head>
 <body>
-    <div class="search">
-    <a href="{{ url_for('movies') }}" class="back-button">Back to Search Results</a>
-    </div>
+    
     <div class="container">
         <img src="{{ movie.poster_url }}" alt="{{ movie.title }} Poster" class="movie-image">
 
         <div class="movie-info">
-            <h1>{{ movie.title }}</h1>
-         
+            <h1 style="color:gold">{{ movie.title }}</h1>
             <p><strong>Release Year:</strong> {{ movie.release_year }}</p>
             <p><strong>Popularity:</strong> {{ movie.popularity }}</p>
             <p><strong>Genres:</strong> {{ movie.genres | join(", ") }}</p>
             <p><strong>Overview:</strong> {{ movie.overview }}</p>
-            
-            <!-- Add to Watchlist and Like buttons -->
+            <h3 style="color:gold">Crew:</h3>
+            <ul>
+                {% for member in movie.crew[:3] %}
+                    <li>
+                        {{ member.name }},{{ member.job }},{{ member.department }}
+                    </li>
+                {% endfor %}
+            </ul>
             <div class="action-buttons">
-                <button class="watchlist-button">Add to Watchlist</button>
-                <button class="like-button">❤️ Like</button>
+                <form id="watchlistForm" style="display: inline;">
+                    <input type="hidden" name="movie_id" value="{{ movie.movie_id }}">
+                    <button type="button" onclick="addToWatchlist()" class="watchlist-button">Add Movie to Watchlist</button>
+                </form>
+
+                <div id="notification" style="display:none;" class="notification"></div>
+                <button type="button" onclick="fetchUserLists()" class="add-to-list-button">Add to List</button>
+               
+                <div id="listModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close-button" onclick="closeModal()">&times;</span>
+                        <h2 style="color:#243642">Select a List</h2>
+                        <ul id="userLists"></ul>
+                    </div>
+                </div>
+                 
             </div>
         </div>
     </div>
-
-    <!-- Comment Box for Reviews -->
+    
+    
+    {% if  session.get('logged_in') %}
     <div class="comment-section">
         <h2>Leave a Review</h2>
-        <form action="/add_review" method="post">
-            <textarea name="review" placeholder="Write your review here..." required></textarea>
+        <form id="reviewForm" onsubmit="submitReview(event)">
+            <textarea name="review_text" placeholder="Write your review here..." optional></textarea>
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <input type="hidden" name="movie_id" value="{{ movie.movie_id }}">
+            <input type="number" name="rating" min="1" max="5" placeholder="Rate (1-5)" required>
             <button type="submit" class="submit-button">Submit Review</button>
         </form>
     </div>
+    {%endif%}
+   
+        {% if  not session.get('logged_in') %}
+        <h2 style="color: gold; text-align: center;">Sign In To Add a Review</h2>
+
+        {% endif %}
+
+    <div class="reviews-section">
+        <h2>📝Reviews</h2>
+        <div id="reviewsContainer">
+            <div class="review-content">
+                <p>Loading reviews...</p>
+            </div>
+        </div>
+    </div>
+   
 </body>
 </html>
+
+    <script>
+        const commentsPageUrl = "{{ url_for('comments_page', review_id=0) }}";
+
+        async function fetchReviews() {
+            const movie_id = "{{ movie.movie_id }}";
+            try {
+                const response = await fetch(`/api/reviews/movie/${movie_id}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayReviews(data.reviews);
+                } else {
+                    document.getElementById("reviewsContainer").innerText = "No reviews found for this movie.";
+                }
+            } catch (error) {
+                document.getElementById("reviewsContainer").innerText = "An error occurred while loading reviews.";
+                console.error(error);
+            }
+        }
+
+        function displayReviews(reviews) {
+            const reviewsContainer = document.getElementById("reviewsContainer");
+            reviewsContainer.innerHTML = "";
+
+            reviews.forEach(review => {
+                const reviewElement = document.createElement("div");
+                reviewElement.classList.add("review");
+
+                reviewElement.innerHTML = `
+                    <p><strong>👤User:</strong> ${review.user_id}</p>
+                    <p><strong>⭐Rating:</strong> ${review.rating}/5</p>
+                    <p>${review.review_text || "No text provided"}</p>
+                    <p><strong>🗳️Votes:</strong> ${review.netvotes}</p>
+                    <p><small>Posted on: ${new Date(review.created_at).toLocaleString()}</small></p>
+                    <div class="vote-buttons">
+                        <button onclick="voteReview(${review.review_id}, true)">👍 Upvote</button>
+                        <button onclick="voteReview(${review.review_id}, false)">👎 Downvote</button>
+                    </div>
+                    <a href="${commentsPageUrl.replace('0', review.review_id)}" class="reply-button">Reply</a>
+                `;
+
+                const currentUserId = "{{ session['user_id'] }}"; 
+                if (currentUserId == review.user_id) {
+                    const deleteButton = document.createElement("button");
+                    deleteButton.innerText = "Delete Review";
+                    deleteButton.classList.add("delete-button");
+                    deleteButton.onclick = () => deleteReview(review.review_id);
+                    reviewElement.appendChild(deleteButton);
+                }
+
+                reviewsContainer.appendChild(reviewElement);
+            });
+        }
+
+        async function voteReview(review_id, vote_type) {
+            try {
+                const response = await fetch(`/api/reviews/${review_id}/vote`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ 
+                        user_id: "{{ session['user_id'] }}",
+                        vote_type: vote_type 
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    fetchReviews(); // Reload reviews to update votes
+                    location.reload();
+                } else {
+                    alert(result.error);
+                }
+            } catch (error) {
+                console.error("Error voting on review:", error);
+                alert("An error occurred while voting on the review.");
+            }
+        }
+
+        async function deleteReview(review_id) {
+            try {
+                const response = await fetch(`/api/reviews/${review_id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    fetchReviews(); // Reload reviews after deletion
+                    location.reload();
+                } else {
+                    alert(result.error);
+                }
+            } catch (error) {
+                console.error("Error deleting review:", error);
+                alert("An error occurred while deleting the review.");
+            }
+        }
+
+        async function submitReview(event) {
+            event.preventDefault();
+            const formData = new FormData(document.getElementById("reviewForm"));
+            const data = {
+                rating: formData.get("rating"),
+                movie_id: formData.get("movie_id"),
+                review_text: formData.get("review_text")
+            };
+
+            try {
+                const response = await fetch("/api/reviews", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    document.getElementById("reviewForm").reset();
+                    location.reload();
+                    fetchReviews(); // Reload reviews after submission
+                } else {
+                    alert(result.error);
+                }
+            } catch (error) {
+                alert("An error occurred while submitting the review.");
+
+                console.error(error);
+            }
+        }
+
+        async function addToWatchlist() {
+            const form = document.getElementById('watchlistForm');
+            const formData = new FormData(form);
+            const movie_id = formData.get("movie_id");
+
+            try {
+                const response = await fetch('/add_to_watchlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ movie_id: movie_id })
+                });
+
+                const result = await response.json();
+                const notification = document.getElementById('notification');
+                notification.innerText = result.message;
+                notification.style.display = 'block';
+            } catch (error) {
+                console.error('Error adding to watchlist:', error);
+                const notification = document.getElementById('notification');
+                notification.innerText = "An error occurred while adding to the watchlist.";
+                notification.style.display = 'block';
+            }
+        }
+
+        window.onload = fetchReviews;
+        
+        const userId = "{{ session['user_id'] }}";  // User ID from the backend
+        
+        
+        async function fetchUserLists() {
+            try {
+                const response = await fetch('/api/user_lists');
+                const data = await response.json();
+        
+                if (response.ok) {
+                    displayUserLists(data.lists);
+                } else {
+                    alert("Failed to fetch lists: " + data.error);
+                }
+            } catch (error) {
+                console.error("Error fetching user lists:", error);
+                alert("An error occurred while fetching lists.");
+            }
+        }
+        
+        function displayUserLists(lists) {
+            const userListsContainer = document.getElementById("userLists");
+            userListsContainer.innerHTML = "";
+        
+            lists.forEach(list => {
+                const listItem = document.createElement("li");
+                listItem.innerText = list.list_title;
+                listItem.onclick = () => addItemToList(list.list_id);
+                userListsContainer.appendChild(listItem);
+            });
+        
+            // Show the modal
+            document.getElementById("listModal").style.display = "block";
+        }
+        
+        function closeModal() {
+            document.getElementById("listModal").style.display = "none";
+        }
+        
+        async function addItemToList(list_id) {
+            const movie_id = "{{ movie.movie_id }}"; // Current movie ID
+        
+            try {
+                const response = await fetch('/api/list_items', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ list_id: list_id, movie_id: movie_id })
+                });
+        
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    closeModal();
+                } else {
+                    alert("Failed to add item to list: " + result.error);
+                }
+            } catch (error) {
+                console.error("Error adding item to list:", error);
+                alert("An error occurred while adding the item to the list.");
+            }
+        }
+        
+    </script>
+  
+

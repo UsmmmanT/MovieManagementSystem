@@ -1,0 +1,84 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1ac9;
+    color: #ffffff;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Back button */
+.back-button {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #333333;
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #FFD700;
+    color: #333333;
+}
+
+/* Movies container */
+.movies-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Individual movie card */
+.movie-card {
+    display: flex;
+    background-color: #333333;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Movie poster */
+.movie-poster {
+    width: 200px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px 0 0 8px;
+}
+
+/* Movie details */
+.movie-details {
+    flex: 1;
+    padding: 15px;
+  
+    text-align: left;
+}
+
+.movie-details h3 {
+    margin-top: 0;
+    font-size: 1.8em;
+    color: #FFD700;
+}
+
+.movie-details p {
+    margin: 8px 0;
+    font-size: 1em;
+    color:#ffffff;
+}
+.movie-details strong {
+        color:#FFD700;
+    }
+
+

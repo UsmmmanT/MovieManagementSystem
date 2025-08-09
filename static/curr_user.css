@@ -1,0 +1,96 @@
+/* Reset margin for body */
+body {
+    margin: 0; /* Removes any default margin around the body */
+    background-color: grey; /* Sets the background color to grey */
+    background-attachment: fixed; /* Ensures the background stays fixed during scrolling */
+    color: white; /* Ensures that text is white for readability */
+}
+
+/* Container styling */
+.container {
+    margin: 20px auto;
+    padding: 20px;
+    border: 5px solid #252424;
+    border-radius: 10px;
+    background-color: #000000b5; /* Semi-transparent black background */
+    width: 90%;
+    max-width: 800px; /* Restricts the container width */
+}
+
+/* User detail container */
+.user-container {
+    margin-bottom: 20px;
+    background-color: rgba(71, 70, 70, 0.922); /* Semi-transparent background */
+    border-radius: 10px;
+    padding: 20px;
+}
+
+/* Pending Friend Requests container */
+.friend-requests-container {
+    margin-bottom: 20px;
+    background-color: rgba(30, 30, 30, 0.9); /* Slightly darker semi-transparent background */
+    border-radius: 10px;
+    padding: 20px;
+}
+
+/* Friend request card styling */
+.friend-request-card {
+    margin-bottom: 15px;
+    background-color: rgba(50, 50, 50, 0.9); /* Contrast background for individual requests */
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid gold; /* Adds a gold border to match the theme */
+}
+
+/* Friends List container */
+.friends-list-container {
+    margin-bottom: 20px;
+    background-color: rgba(50, 50, 50, 0.9); /* Matches friend request cards */
+    border-radius: 10px;
+    padding: 20px;
+}
+
+/* Friend card styling */
+.friend-card {
+    margin-bottom: 15px;
+    background-color: rgba(71, 70, 70, 0.922); /* Slightly lighter background */
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #aaa; /* Subtle border for individual friend cards */
+}
+
+/* Strong text color */
+strong {
+    color: gold;
+}
+
+/* Paragraph text color */
+p {
+    color: white;
+}
+
+/* Buttons */
+.accept-btn {
+    background-color: gold;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.accept-btn:hover {
+    background-color: darkgoldenrod;
+}
+.delete-btn {
+    background-color: #ff4d4d; /* Red for delete action */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background-color: #e60000; /* Darker red on hover */
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='review1.css') }}">
+    <title>Your Reviews</title>
+</head>
+<body>
+    {% if session['logged_in'] %}
+        <div class="container">
+            <h1>Your Reviews</h1>
+
+            <!-- Check if reviews exist -->
+            {% if reviews %}
+                <div class="reviews-list">
+                    {% for review in reviews %}
+                        <div class="review-card">
+                            <a href="{{ url_for('media_detail', movie_id=review['movie_id'], media_type='movie') }}">
+                                <!-- Display Movie Poster -->
+                                <img src="{{ review['poster_path'] }}" alt="{{ review['title'] }} Poster">
+                                
+                                <!-- Display Movie Title -->
+                                <h3 style="color:gold">{{ review['title'] }}</h3>
+                            </a>
+
+                            <!-- Display Rating -->
+                            <p><strong>Rating:</strong> {{ review['rating'] }}/5</p>
+
+                            <!-- Display Review Text -->
+                            <p><strong>Review:</strong> {{ review['review_text'] }}</p>
+
+                            <!-- Display Created Date -->
+                            <p><small><strong>Created On:</strong> {{ review['created_at'] }}</small></p>
+
+                            <!-- Optional: Display TV Show details if tv_id exists -->
+                            {% if review['tv_id'] %}
+                                <p><strong>TV Show ID:</strong> {{ review['tv_id'] }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- If no reviews are found -->
+                <p>No reviews found for this user.</p>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="container">
+            <h2 style="color:gold">Please Sign In to View Your Reviews</h2>
+            <a href="{{ url_for('signin') }}">
+                <button class="sign-in-button">Sign In</button>
+            </a>
+            
+        </div>
+    {% endif %}
+</body>
+</html>

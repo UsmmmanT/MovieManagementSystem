@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% extends 'base.html' %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='comments_page.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+</head>
+<body>
+    <div class="container">
+        <!-- Parent Review Section -->
+        <div class="parent-review">
+            <h2 style="color:#cb9c23">📝Review</h2>
+            {% if p_review %}
+                <div class="review-box">
+                    <p><strong>👤User ID:</strong> {{ p_review.user_id }}</p>
+                    <p><strong>⭐Rating:</strong> {{ p_review.rating }}</p>
+                    <p><strong>📝Review:</strong> {{ p_review.review_text }}</p>
+                </div>
+            {% else %}
+                <p>No parent review found.</p>
+            {% endif %}
+        </div>
+
+        <hr>
+
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <h2 style="color:#cb9c23">💬Comments</h2>
+            {% for comment in comments %}
+                <div class="comment-box" id="comment-{{ comment.comment_id }}">
+                    <p><strong>User ID:</strong> {{ comment.user_id }}</p>
+                    <p>{{ comment.comment_text }}</p>
+                    <p><small>Posted on: {{ comment.created_at }}</small></p>
+                    <p><strong>Votes:</strong> {{ comment.votes }}</p>
+
+                    <!-- Voting Buttons -->
+                    <button class="vote-btn" data-comment-id="{{ comment.comment_id }}" data-vote-type="up">👍Upvote</button>
+                    <button class="vote-btn" data-comment-id="{{ comment.comment_id }}" data-vote-type="down">👎Downvote</button>
+
+                    <!-- Update and Delete Buttons -->
+                    {% if comment.user_id == session['user_id'] %}
+                        <button class="update-btn" data-comment-id="{{ comment.comment_id }}">Update</button>
+                        <button class="delete-btn" data-comment-id="{{ comment.comment_id }}">Delete</button>
+                    {% endif %}
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+
+        <!-- Add Comment Section -->
+        {% if  session.get('logged_in') %}
+               
+        <div class="add-comment">
+            <h2>Add a Comment</h2>
+            <textarea id="comment-text" rows="4" cols="50" placeholder="Write your comment here..."></textarea><br>
+            <button id="add-comment-btn">Submit</button>
+        </div>
+        
+        {% endif %}
+        {% if  not session.get('logged_in') %}
+        <h2 style="color:gold">Sign In To Add a Comment</h3>
+        {% endif %}
+    </div>
+    </html>
+    <script>
+        // Add Comment Functionality
+        $('#add-comment-btn').on('click', function() {
+            const reviewId = {{ review_id }};
+            const commentText = $('#comment-text').val();
+
+            $.ajax({
+                url: '/add_comment',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ review_id: reviewId, comment_text: commentText }),
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(err) {
+                    alert(err.responseJSON.error || "Failed to add comment.");
+                }
+            });
+        });
+
+        // Vote on Comments
+        $('.vote-btn').on('click', function() {
+            const commentId = $(this).data('comment-id');
+            const voteType = $(this).data('vote-type');
+
+            $.ajax({
+                url: `/api/comments/${commentId}/vote`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ user_id: {{ session['user_id'] }}, vote_type: voteType }),
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(err) {
+                    alert(err.responseJSON.error || "Failed to vote on comment.");
+                }
+            });
+        });
+
+        // Delete Comment
+        $('.delete-btn').on('click', function() {
+            const commentId = $(this).data('comment-id');
+
+            $.ajax({
+                url: `/api/comments/${commentId}`,
+                type: 'DELETE',
+                contentType: 'application/json',
+                data: JSON.stringify({ user_id: {{ session['user_id'] }} }),
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(err) {
+                    alert(err.responseJSON.error || "Failed to delete comment.");
+                }
+            });
+        });
+
+        // Update Comment
+        $('.update-btn').on('click', function() {
+            const commentId = $(this).data('comment-id');
+            const newCommentText = prompt("Enter the new comment text:");
+
+            if (newCommentText) {
+                $.ajax({
+                    url: `/api/comments/${commentId}`,
+                    type: 'PATCH',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ user_id: {{ session['user_id'] }}, new_text: newCommentText }),
+                    success: function(response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function(err) {
+                        alert(err.responseJSON.error || "Failed to update comment.");
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+{% endblock %}
+

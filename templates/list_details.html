@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Items</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='list_details.css') }}">
+</head>
+<body>
+    <div class="movies-container">
+        <h2 style="color:#cec631">🎬Movies in the List</h2>
+        <div class="movies-grid">
+            {% for movie in movies %}
+            <div class="movie-card">
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster">
+                <div class="movie-details">
+                    <h2 style="color:#cec631">{{ movie.title }}</h2>
+                    <p><strong>Release Year:</strong> {{ movie.release_year }}</p>
+                    <p><strong>Popularity:</strong> {{ movie.popularity }}</p>
+                    <p><strong>Genres:</strong> {{ movie.genres | join(', ') }}</p>
+                    <p><strong>Overview:</strong> {{ movie.overview }}</p>
+                </div>
+                
+                
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>
+
+

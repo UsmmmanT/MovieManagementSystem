@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<head>
+    <title>👥 User Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='curr_user.css') }}">
+</head>
+
+<body>
+<div class="container">
+  
+  <!-- User Details Section -->
+  <div class="user-container">
+      <p><strong>Username:</strong> {{ user[0].user_name }}</p>
+    
+      <p>🔗 {{ user[0].email }}</p>
+  </div>
+
+  <!-- Pending Friend Requests Section -->
+  <h3 style="color:gold">📩Pending Friend Requests</h3>
+  <div class="friend-requests-container">
+    {% if friend_requests %}
+        {% for request in friend_requests %}
+            <div class="friend-request-card">
+                <p><strong>Requester ID:</strong> {{ request[1] }}</p>
+                <form action="{{ url_for('accept_friend_request', request_id=request[0]) }}" method="post">
+                    <button type="submit" class="accept-btn">Accept</button>
+                </form>
+                <form action="{{ url_for('delete_friend_request', request_id=request[0]) }}" method="post">
+                    <button type="submit" class="delete-btn">Delete</button>
+                </form>
+                
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No pending friend requests.</p>
+    {% endif %}
+  </div>
+
+  <!-- Friends List Section -->
+  <h3 style="color:gold">🤝Friends:</h3>
+  <div class="friends-list-container">
+    {% if friends %}
+        {% for friend in friends %}
+            <div class="friend-card">
+                <p> {{ friend.user_name }}</p>
+               
+                <form action="{{ url_for('delete_friend', friend_id=friend.user_id) }}" method="post" style="position: relative;">
+                    <button type="submit" class="delete-btn" style="position: absolute; bottom: 10px; right: 10px; background-color: red; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                        💔Unfriend
+                    </button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>You have no friends yet. Start adding some!</p>
+    {% endif %}
+  </div>
+</div>
+</body>
+{% endblock %}

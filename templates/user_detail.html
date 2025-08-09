@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<head>
+    <title>👥 User Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='user_detail.css') }}">
+</head>
+
+<body>
+<div class="container">
+
+    <!-- User Details Section -->
+    <div class="user-container shared-container">
+        <p><strong>Name:</strong> {{ user[0].user_name }}</p>
+        <p><strong>User ID:</strong> {{ user[0].user_id }}</p>
+        <p><strong>Email:</strong> {{ user[0].email }}</p>
+    </div>
+
+    <!-- Add as Friend Button -->
+    {% if not status %}
+    <div class="button-container">
+        <button class="add-friend-button" data-requestee-id="{{ user[0].user_id }}">Add as Friend</button>
+    </div>
+    {% endif %}
+
+    {% if status %}
+    <button class="delete-request-btn" data-requester-id="{{ requester_id }}" data-requestee-id="{{ requestee_id }}">
+        Delete Request
+    </button>
+    {% endif %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addFriendButton = document.querySelector('.add-friend-button');
+            if (addFriendButton) {
+                addFriendButton.addEventListener('click', function() {
+                    const requesterId = {{ session['user_id'] }}; // Current logged-in user's ID
+                    const requesteeId = {{ user[0].user_id }}; // The user ID to whom the request is being sent
+    
+                    // Perform an AJAX POST request
+                    fetch('/send_friend_request', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            requester_id: requesterId,
+                            requestee_id: requesteeId
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            alert(data.message); // Success message
+                            // Update the button to indicate the request was sent
+                            addFriendButton.innerText = "Request Sent";
+                            addFriendButton.disabled = true;
+                            location.reload(); // Optionally reload the page to reflect changes
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while sending the friend request.');
+                    });
+                });
+            }
+        });
+    </script>
+    
+    <script>
+        document.querySelector('.delete-request-btn').addEventListener('click', function() {
+            const requesterId = {{ session['user_id'] }}; // Current logged-in user's ID
+            const requesteeId = {{ user[0].user_id }}; // The user ID from whom the request is being deleted
+    
+            // Perform an AJAX POST request to delete the friend request
+            fetch(`/delete_friend_request2/${requesteeId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message); // Success message
+                    // Update the button text or hide it after successful deletion
+                    document.querySelector('.delete-request-btn').innerText = "Request Deleted";
+                    document.querySelector('.delete-request-btn').disabled = true;
+                    location.reload();
+                } else if (data.error) {
+                    alert(data.error); // Error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the friend request.');
+            });
+        });
+    </script>
+
+</div>
+
+<!-- User List Section -->
+<div class="user-list-section shared-container">
+    <h3>👥 User's List</h3>
+    {% if user_list %}
+        <ul class="user-list">
+            {% for list in user_list %}
+                {% if list.list_type == "public" %}
+                <li>
+                    <a href="/api/list_items/list/{{ list.list_id }}/type" class="list-link" data-list-id="{{ list.list_id }}">
+                        <p style="text-decoration:none"><strong>Title:</strong> {{ list.list_title }}</p>
+                        <p style="text-decoration:none"><strong>Description:</strong> {{ list.description }}</p>
+                        <p style="text-decoration:none"><strong>Votes:</strong> <span id="votes-{{ list.list_id }}">{{ list.netvotes }}</span></p>
+                        <span>🌍Public</span>
+                    </a>
+                    
+                    <!-- Upvote and Downvote Buttons -->
+                    <div class="vote-buttons">
+                        <button class="upvote-button" data-list-id="{{ list.list_id }}">👍 Upvote</button>
+                        <button class="downvote-button" data-list-id="{{ list.list_id }}">👎 Downvote</button>
+                    </div>
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No lists found for this user.</p>
+    {% endif %}
+</div>
+
+<script>
+    // Function to handle voting (upvote/downvote)
+    function handleVote(listId, voteType) {
+        fetch(`/api/lists/${listId}/vote`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                vote_type: voteType // 'true' or 'false'
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                // Update the votes count in the UI
+                const votesElement = document.getElementById(`votes-${listId}`);
+                votesElement.innerText = data.new_votes; // Updated vote count
+                alert(data.message); // Success message
+            } else if (data.error) {
+                alert(data.error); // Handle errors
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while voting.');
+        });
+    }
+
+    // Add event listeners to upvote and downvote buttons
+    document.querySelectorAll('.upvote-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const listId = this.getAttribute('data-list-id');
+            handleVote(listId, 'true');
+        });
+    });
+
+    document.querySelectorAll('.downvote-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const listId = this.getAttribute('data-list-id');
+            handleVote(listId, 'false');
+        });
+    });
+</script>
+
+{% endblock %}

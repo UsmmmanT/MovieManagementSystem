@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lists</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='list.css') }}">
+</head>
+<body>
+    <div class="list_container">
+        <div id="introMessage" class="intro">
+            <h1>Collect, curate, and share.</h1>
+            <p>Lists are the perfect way to group films.</p>
+            <button id="startListButton" class="start-button">Start your own list</button>
+        </div>
+    
+        <div id="formContainer" class="form-container" style="display: none;">
+            <h2 id="formTitle">Create Your List</h2>
+            <form id="listForm" onsubmit="submitList(event)">
+                <label for="listName">List Name:</label>
+                <input type="text" id="listName" name="listName" placeholder="Enter list name" required>
+    
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" placeholder="Describe your list" required></textarea>
+    
+                <label for="listType">List Type:</label>
+                <select id="listType" name="listType" required>
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                    <option value="friends-only">Friends Only</option>
+                </select>
+    
+                <button type="submit" class="submit-button">Save List</button>
+            </form>
+        </div>
+    
+        <div class="lists-display">
+            {% for list in lists %}
+            <div class="list-item" data-list-id="{{ list.list_id }}">
+                <a href="/api/list_items/list/{{ list.list_id }}/type">
+                    <div class="list-header">
+                        <h3 class="list-title">{{ list.list_title }}</h3>
+                        <div class="spanning-objects"> 
+                            <span class="netvotes">🗳️Votes: {{ list.netvotes | capitalize }}</span>
+                            {% if list.list_type == "private" %}
+                            <span class="list-type">🔒{{ list.list_type | capitalize }}</span>
+                            {% elif list.list_type == "public" %}
+                            <span class="list-type">🌍{{ list.list_type | capitalize }}</span>
+                            {% elif list.list_type == "friends-only" %}
+                            <span class="list-type">🤝{{ list.list_type | capitalize }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <p class="list-description">{{ list.description }}</p>
+                </a>
+                <div class="vote-buttons">
+                    <button class="update-button" onclick="openUpdateForm({{ list.list_id }})">🖋️ Update List</button>
+                    <button class="delete-button" onclick="deleteList({{ list.list_id }})">🗑️Delete List</button>
+                    <button class="upvote-button" onclick="voteOnList(true, {{ list.list_id }})">👍Upvote</button>
+                    <button class="downvote-button" onclick="voteOnList(false, {{ list.list_id }})">👎Downvote</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('startListButton').addEventListener('click', function () {
+            // Hide the intro message and show the form
+            document.getElementById('introMessage').style.display = 'none';
+            document.getElementById('formContainer').style.display = 'block';
+            document.getElementById('formTitle').textContent = 'Create Your List';
+            document.getElementById('listForm').reset(); // Reset form fields
+            delete document.getElementById('listForm').dataset.listId; // Clear any existing list ID
+        });
+
+        async function submitList(event) {
+            event.preventDefault();
+
+            const listId = document.getElementById('listForm').dataset.listId; // Get the list ID from the form dataset
+            const listName = document.getElementById('listName').value;
+            const description = document.getElementById('description').value;
+            const listType = document.getElementById('listType').value;
+
+            const listData = {
+                listName,
+                description,
+                listType,
+            };
+
+            let requestUrl = '/create_list';
+            let requestMethod = 'POST';
+
+            if (listId) {
+                // If updating an existing list
+                requestUrl = `/api/lists/${listId}`;
+                requestMethod = 'PUT';
+            }
+
+            try {
+                const response = await fetch(requestUrl, {
+                    method: requestMethod,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(listData),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message || (listId ? 'List updated successfully!' : 'List created successfully!'));
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to save the list.'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An unexpected error occurred. Please try again.');
+            }
+        }
+
+        function openUpdateForm(listId) {
+            const listItem = document.querySelector(`[data-list-id="${listId}"]`);
+            const listTitle = listItem.querySelector('.list-title').textContent.trim();
+            const listDescription = listItem.querySelector('.list-description').textContent.trim();
+            const listType = listItem.querySelector('.list-type').textContent.trim().replace(/🔒|🌍|🤝/, '').toLowerCase();
+
+            document.getElementById('listName').value = listTitle;
+            document.getElementById('description').value = listDescription;
+            document.getElementById('listType').value = listType;
+
+            document.getElementById('introMessage').style.display = 'none';
+            document.getElementById('formContainer').style.display = 'block';
+            document.getElementById('formTitle').textContent = 'Update Your List';
+            document.getElementById('listForm').dataset.listId = listId; // Store the list ID for updating
+        }
+
+        async function deleteList(listId) {
+            const confirmation = confirm('Are you sure you want to delete this list?');
+            if (!confirmation) return;
+
+            try {
+                const response = await fetch(`/api/lists/${listId}`, { method: 'DELETE' });
+
+                if (response.ok) {
+                    alert('List deleted successfully!');
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + (data.error || 'Failed to delete the list.'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An unexpected error occurred. Please try again.');
+            }
+        }
+
+        async function voteOnList(voteType, listId) {
+            try {
+                const response = await fetch(`/api/lists/${listId}/vote`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ vote_type: voteType }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(`Vote recorded: ${voteType ? 'Upvote' : 'Downvote'}`);
+                    location.reload();
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to record vote.'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while voting. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

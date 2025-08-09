@@ -7,19 +7,20 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
+    background-color: #00000081;
     color: #333;
 }
 
 
 /* Hero Section */
 .hero {
-    background-image: url('image/background.jpg');
+    background-image: url('image/m5.jpg');
     background-size: cover;
     background-position: center;
     padding: 100px 0;
     text-align: center;
     color: #ffffff;
+
 }
 
 .hero h1 {
@@ -30,6 +31,8 @@ body {
 .hero p {
     font-size: 18px;
     margin-bottom: 40px;
+    font-weight: bold;
+    color:black;
 }
 
 .hero .btn {
@@ -45,7 +48,11 @@ body {
     background-color: #e68a00;
 }
 
+
 /* Movie Grid Section */
+.movie-card h2{
+    color: #e68a00;
+}
 .movie-grid {
     max-width: 1200px;
     margin: 40px auto;
@@ -65,16 +72,22 @@ body {
 }
 
 .movie-card {
-    background-color: #ffffff;
+    background-color: #03000097;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}.movie-card strong{
+    color:gold;
 }
 
+movie-card h3{
+    color:white;
+}
 .movie-card img {
     width: 100%;
     height: 300px; /* Fixed height */
     object-fit: cover; /* Ensures the image covers the area without distortion */
+    padding: 5px ;
 }
 
 .movie-info {
@@ -103,4 +116,11 @@ footer {
 
 footer p {
     font-size: 14px;
+}
+.movie-card a {
+    text-decoration: none; /* Removes the underline from the link */
+    color: inherit; /* Ensures the text color is inherited from the parent */
+}
+#recommended-movies .movie-card {
+    background-color: #333; /* Slightly lighter background for distinction */
 }

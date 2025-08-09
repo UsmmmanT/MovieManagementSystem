@@ -1,0 +1,265 @@
+/* General Reset */
+body {
+    margin: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #18181869; /* Dark background */
+    color: #ffffff; /* White text */
+    line-height: 1.6;
+}
+.intro_container{
+    border: 2px dashed #1c201de6; /* Dashed green border */
+    
+}
+
+h1, h2, p {
+    margin: 0 0 15px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+p {
+    font-size: 1rem;
+    color: #000000de; /* Lighter gray for paragraphs */
+    font-weight: bold;
+}
+
+.list-description{
+    color:#ffffff;
+}
+/* Centered Intro Section */
+.intro {
+    text-align: center;
+    padding: 50px;
+    border-bottom: 1px solid #333; /* Subtle separator */
+    background-image: url('image/m5.jpg');
+    
+}
+
+.start-button {
+    background-color: #1DB954; /* Vibrant green */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.start-button:hover {
+    background-color: #1aa34a; /* Slightly darker green on hover */
+}
+
+/* Form Container */
+.form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #202020; /* Slightly lighter dark background */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #ffffff;
+}
+
+input[type="text"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: #181818; /* Darker input background */
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+input[type="text"]::placeholder,
+textarea::placeholder {
+    color: #b0b0b0; /* Light gray placeholder text */
+}
+
+textarea {
+    resize: none; /* Disable resize */
+}
+
+button.submit-button {
+    background-color: #1DB954; /* Vibrant green */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button.submit-button:hover {
+    background-color: #1aa34a; /* Slightly darker green on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        font-size: 0.9rem;
+    }
+
+    .form-container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* List Container */
+
+.lists-display {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+/* Individual List Item */
+.list-item {
+    background-color: #000000a8; /* Dark background similar to form container */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* List Header */
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* List Title */
+.list-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+
+
+/* List Type */
+.list-type {
+    /* Align elements horizontally */
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #1DB954; /* Vibrant green to match button */
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin: 0;
+    gap: 0; /* Ensure no gap between elements */
+}
+.netvotes
+{
+     /* Align elements horizontally */
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #1DB954; /* Vibrant green to match button */
+    padding: 5px 10px;
+    
+    border-radius: 5px;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin: 0;
+    gap: 0; /* Ensure no gap between elements */
+}
+
+
+/* List Description */
+.list-description {
+    font-size: 1rem;
+    color: #b0b0b0; /* Light gray for description */
+    line-height: 1.6;
+}
+
+/* Remove link styles */
+.list-item a {
+    text-decoration: none; /* Remove underlines */
+    color: inherit; /* Ensure text inherits the parent's color */
+}
+
+.list-item a:hover {
+    background-color: transparent; /* Prevent background change on hover */
+}
+
+
+
+#vote-buttons #delete-button {
+    background-color: #ce4040; /* Red background */
+    color: #ffffff; /* White text */
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#vote-buttons #delete-button:hover {
+    background-color: #a53838; /* Darker red on hover */
+}
+
+
+#vote-buttons #upvote-button {
+    background-color: #1aa34a; /* Green background */
+    color: #ffffff; /* White text */
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#vote-buttons #upvote-button:hover {
+    background-color: #168a3c; /* Darker green on hover */
+}
+
+#vote-buttons #downvote-button {
+    background-color: #ce4040; /* Red background */
+    color: #ffffff; /* White text */
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#vote-buttons #downvote-button:hover {
+    background-color: #a53838; /* Darker red on hover */
+}
+
